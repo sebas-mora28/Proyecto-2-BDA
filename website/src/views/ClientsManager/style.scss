@@ -1,0 +1,44 @@
+
+
+.container {
+   height:100vh;
+   display: flex;
+   justify-content: center;
+   background:linear-gradient(89.97deg, #A18CED 4.2%, #DCB7D4 92.17%);
+   color: white;
+}
+
+.container-crud {
+   width: 1000px;
+   overflow-x: auto;
+   position: relative;
+   background-color:  rgba(255, 255, 255, 0.29);
+   border-radius: 18px;
+   align-self: center;
+   height: 500px;
+   text-align: center;
+
+   
+   i{
+      font-size: 20px;
+      color: #ffffff;
+   }
+  
+   .titulo{
+      margin-top: 20px;
+      margin-bottom: 20px;
+   }
+  
+   .tabla{
+      border-spacing: 0px;
+      width: 100%;
+   }
+  
+   .tabla td, .tabla th{
+      padding: 7px;
+      vertical-align: top;
+      text-align: center;
+      border-top: 1px azure;
+   }
+}
+

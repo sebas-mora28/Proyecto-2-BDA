@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+
+
+.body-top-products {
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    background:linear-gradient(89.97deg, #A18CED 4.2%, #DCB7D4 92.17%);
+    color: white;
+}
+
+.container-top-products {
+    position: relative;
+    width: 1000px;
+    overflow-x: auto;
+    background-color:  rgba(255, 255, 255, 0.29);
+    border-radius: 18px;
+    align-self: center;
+    height: 500px;
+    text-align: center;
+}
+
+i{
+    font-size: 20px;
+    color: #ffffff;
+ }
+
+ .titulo{
+    margin-top: 20px;
+    margin-bottom: 20px;
+ }
+
+ .tabla{
+    border-spacing: 0px;
+    width: 100%;
+ }
+
+ .tabla td, .tabla th{
+    padding: 7px;
+    vertical-align: top;
+    text-align: center;
+    border-top: 1px azure;
+ }
