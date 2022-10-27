@@ -17,6 +17,10 @@ import TopClients from "./views/TopClients";
 import TopBrands from "./views/TopBrands";
 import TopProducts from "./views/TopProducts";
 import EspecialRequests from "./views/EspecialRequests";
+import ClientPurchases from "./views/ClientPurchases";
+import RegisterPurchase from "./views/RegisterPurchase";
+import SpecialRequest1 from "./views/SpecialRequest1";
+import SpecialRequest2 from "./views/SpecialRequest2";
 
 function App() {
 
@@ -35,7 +39,10 @@ function App() {
           <Route path='/top-brands' element={<TopBrands /> }  />
           <Route path='/top-products' element={<TopProducts /> }  />
           <Route path='/especial-requests' element={<EspecialRequests /> }  />
-        
+          <Route path='/client-purchases' element={<ClientPurchases />} />
+          <Route path='/register-purchase' element={<RegisterPurchase />} />
+          <Route path='/special-request-1' element={<SpecialRequest1 />} />
+          <Route path="/special-request-2" element={<SpecialRequest2 />} />
         </Routes>
       </Router>
   );
