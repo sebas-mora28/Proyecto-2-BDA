@@ -32,12 +32,7 @@ def create_client():
     command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
         id=id, first_name=first_name, last_name=last_name)
 
-    res = graph.run(command).summary()
-
-    if (True):
-        return res
-    else:
-        abort(500)
+    return graph.run(command).summary()
 
 # ___________READ___________________
 
@@ -72,15 +67,12 @@ def update_client():
     first_name = request.json['first_name']
     last_name = request.json['last_name']
 
+    #TODO: Verification
+
     command = 'MATCH(c:Client{{id:{id}}}) SET c.first_name = "{first_name}", c.last_name = "{last_name}" RETURN (c)'.format(
         id=id, first_name=first_name, last_name=last_name)
 
-    res = graph.run(command).summary()
-
-    if (True):
-        return res
-    else:
-        abort(500)
+    return graph.run(command).summary()
 
 # ___________DELETE_________________
 
@@ -102,33 +94,120 @@ def delete_client():
 
 @app.route('/product', methods=['POST'])
 def create_product():
-    return graph.run('')
+
+    id = request.json['id']
+    Nombre = request.json['Nombre']
+    Marca = request.json['Marca']
+    Precio = request.json['Precio']
+
+    #TODO: Verification
+
+    command = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
+        id=id, Nombre=Nombre, Marca=Marca, Precio=Precio)
+
+    return graph.run(command).summary()
 
 # ___________READ___________________
 
 
 @app.route('/products', methods=['GET'])
 def get_products():
-    return graph.run('').data()
+
+    return graph.run("MATCH(p:Product) RETURN (p)").data()
 
 
 @app.route('/product', methods=['GET'])
 def get_product():
-    return graph.run('').data()
+
+    id = request.json['id']
+
+    command = 'MATCH(p:Product{{id:{id}}}) RETURN (p)'.format(id=id)
+
+    res = graph.run(command).data()
+
+    if(res == []):
+        abort(404)
+    else:
+        return res
 
 # ___________UPDATE_________________
 
 
 @app.route('/product', methods=['PUT'])
 def update_product():
-    return graph.run('')
+
+    id = request.json['id']
+    Nombre = request.json['Nombre']
+    Marca = request.json['Marca']
+    Precio = request.json['Precio']
+
+    #TODO: Verification
+
+    command = 'MATCH (p:Product{{id:{id}}}) SET p.Nombre = "{Nombre}", p.Marca = "{Marca}", p.Precio = {Precio} RETURN (p)'.format(
+        id=id, Nombre=Nombre, Marca=Marca, Precio=Precio)
+
+    return graph.run(command).summary()
+
 
 # ___________DELETE_________________
 
 
 @app.route('/product', methods=['DELETE'])
 def delete_product():
-    return graph.run('')
+
+    id = request.json['id']
+
+    command = 'MATCH(p:Product{{id:{id}}}) DETACH DELETE p'.format(id=id)
+
+    return graph.run(command).summary()
+
+
+#           _____________________________
+# _________/ BRAND QUERIES
+
+# ___________CREATE_________________
+
+
+@app.route('/brand', methods=['POST'])
+def create_brand():
+
+    id = request.json['id']
+    Nombre = request.json['Nombre']
+    Pais = request.json['Pais']
+
+    #TODO: Verification
+
+    command = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
+        id=id, Nombre=Nombre, Pais = Pais)
+
+    return graph.run(command).summary()
+
+# ___________READ___________________
+
+
+@app.route('/brands', methods=['GET'])
+def get_brands():
+
+    return graph.run("MATCH(b:Brand) RETURN (b)").data()
+
+
+@app.route('/brand', methods=['GET'])
+def get_brand():
+
+    id = request.json['id']
+
+    command = 'MATCH(b:Brand{{id:{id}}}) RETURN (b)'.format(id=id)
+
+    res = graph.run(command).data()
+
+    if(res == []):
+        abort(404)
+    else:
+        return res
+
+# ___________UPDATE_________________
+
+# ___________DELETE_________________
 
 #           _____________________________
 # _________/ SHOPPING QUERIES
@@ -136,7 +215,14 @@ def delete_product():
 
 @app.route('/buy', methods=['POST'])
 def buy():
-    return graph.run('')
+
+    IdCliente = request.json['IdCliente']
+    IdProducto = request.json['IdProducto']
+    Cantidad = request.json['Cantidad']
+
+    command = 'MATCH(c:Client{{id:{IdCliente}}}),(p:Product{{id:{IdProducto}}}) CREATE (c)-[r:Buys{{Cantidad:{Cantidad}}}]->(p)'.format(
+        IdCliente=IdCliente, IdProducto=IdProducto, Cantidad=Cantidad)
+    return graph.run(command).summary()
 
 #           _____________________________
 # _________/ GENERAL QUERIES
@@ -150,7 +236,9 @@ def buy():
 
 @app.route('/top5Products', methods=['GET'])
 def top_5_products():
-    return graph.run('').data()
+
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) RETURN p.Nombre AS Nombre_Producto, SUM(r.Cantidad) AS Unidades_Vendidas ORDER BY (Unidades_Vendidas) DESC LIMIT 5'
+    return graph.run(command).data()
 
 # 2.
 # Top 5 de marcas más vendidas. Se debe mostrar el nombre de la
@@ -161,7 +249,9 @@ def top_5_products():
 
 @app.route('/top5Brands', methods=['GET'])
 def top_5_brands():
-    return graph.run('').data()
+
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) MATCH (b:Brand) WHERE b.Nombre = p.Marca RETURN b.Nombre AS Nombre_Marca, b.Pais AS Pais_Origen, SUM(r.Cantidad) AS Unidades_Vendidas ORDER BY (Unidades_Vendidas) DESC LIMIT 5'
+    return graph.run(command).data()
 
 # #3.
 # Top 5 de clientes con más compras. En este caso se mostrará el
@@ -173,7 +263,9 @@ def top_5_brands():
 
 @app.route('/top5Consumers', methods=['GET'])
 def top_5_consumers():
-    return graph.run('').data()
+
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) RETURN c.first_name + " " + c.last_name AS Nombre_Cliente, SUM(r.Cantidad) AS Unidades_Adquiridas ORDER BY (Unidades_Adquiridas) DESC LIMIT 5'
+    return graph.run(command).data()
 
 # #4.
 # Búsqueda de un cliente: se digitará o seleccionará el nombre del
@@ -183,7 +275,11 @@ def top_5_consumers():
 
 @app.route('/searchClient', methods=['GET'])
 def search_client():
-    return graph.run('').data()
+
+    id = request.json['id']
+
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(id = id)
+    return graph.run(command).data()
 
 
 #           _____________________________
@@ -198,7 +294,9 @@ def search_client():
 # los clientes que también hayan adquirido ese mismo producto.
 @app.route('/commonProduct', methods=['GET'])
 def common_product():
-    return graph.run('').data()
+
+    command = ''
+    return graph.run(command).data()
 
 # #2.
 # Clientes compras en común: en este caso se digitará o seleccionará el
