@@ -178,7 +178,7 @@ def create_brand():
     #TODO: Verification
 
     command = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
-        id=id, Nombre=Nombre, Pais = Pais)
+        id=id, Nombre=Nombre, Pais=Pais)
 
     return graph.run(command).summary()
 
@@ -278,7 +278,8 @@ def search_client():
 
     id = request.json['id']
 
-    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(id = id)
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(
+        id=id)
     return graph.run(command).data()
 
 
@@ -292,10 +293,16 @@ def search_client():
 # adquiridos por el cliente (no todo el catálogo de productos existentes).
 # En este caso, se debe mostrar en pantalla el nombre completo de todos
 # los clientes que también hayan adquirido ese mismo producto.
-@app.route('/commonProduct', methods=['GET'])
+
+
+@app.route('/commonClient', methods=['GET'])
 def common_product():
 
-    command = ''
+    id = request.json['id']
+
+    command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name + " " + C.last_name AS ClienteEnComun'.format(
+        id=id)
+
     return graph.run(command).data()
 
 # #2.
@@ -308,7 +315,12 @@ def common_product():
 
 @app.route('/commonPurchases', methods=['GET'])
 def common_purchases():
-    return graph.run('').data()
+
+    id = request.json['id']
+
+    command = ' CALL {{ MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} MATCH (c2:Client)-[r2:Buys]->(p2:Product) WHERE p.id = p2.id AND NOT c.id = c2.id RETURN c2.first_name + " " + c2.last_name AS Nombre, COLLECT(p2.Nombre) AS Productos ORDER BY(Nombre) }} WITH Nombre, Productos WHERE SIZE(Productos) >= 2 RETURN Nombre, Productos '.format(id=id)
+
+    return graph.run(command).data()
 
 # ______________________________________________________
 
