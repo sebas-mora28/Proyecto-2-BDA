@@ -9,10 +9,26 @@ app = Flask(__name__)
 def home():
     return "<p>API service is running</p>"
 
+#           _____________________________
+# _________/ DEBUG QUERIES
 
-@app.route('/allData', methods=['GET'])
-def all_data():
+@app.route('/all', methods=['GET'])
+def get_all():
     return graph.run("MATCH(n) RETURN n").data()
+
+@app.route('/delete', methods=['Delete'])
+def delete_all():
+    return graph.run("MATCH (n) OPTIONAL MATCH (n)-[r]-( ) DELETE n, r").summary()
+
+
+#           _____________________________
+# _________/ POPULATION QUERIES
+
+@app.route('/loadData', methods=['POST'])
+def load_data():
+
+    return ""
+
 
 #           _____________________________
 # _________/ CLIENT QUERIES
@@ -23,14 +39,14 @@ def all_data():
 @app.route('/client', methods=['POST'])
 def create_client():
 
-    id = request.json['id']
+    client_id = request.json['id']
     first_name = request.json['first_name']
     last_name = request.json['last_name']
 
     #TODO: Verification
 
     command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
-        id=id, first_name=first_name, last_name=last_name)
+        id=client_id, first_name=first_name, last_name=last_name)
 
     return graph.run(command).summary()
 
@@ -46,9 +62,9 @@ def get_clients():
 @app.route('/client', methods=['GET'])
 def get_client():
 
-    id = request.json['id']
+    client_id = request.json['id']
 
-    command = 'MATCH(c:Client{{id:{id}}}) RETURN (c)'.format(id=id)
+    command = 'MATCH(c:Client{{id:{id}}}) RETURN (c)'.format(id=client_id)
 
     res = graph.run(command).data()
 
@@ -63,14 +79,14 @@ def get_client():
 @app.route('/client', methods=['PUT'])
 def update_client():
 
-    id = request.json['id']
+    client_id = request.json['id']
     first_name = request.json['first_name']
     last_name = request.json['last_name']
 
     #TODO: Verification
 
     command = 'MATCH(c:Client{{id:{id}}}) SET c.first_name = "{first_name}", c.last_name = "{last_name}" RETURN (c)'.format(
-        id=id, first_name=first_name, last_name=last_name)
+        id=client_id, first_name=first_name, last_name=last_name)
 
     return graph.run(command).summary()
 
@@ -80,9 +96,9 @@ def update_client():
 @app.route('/client', methods=['DELETE'])
 def delete_client():
 
-    id = request.json['id']
+    client_id = request.json['id']
 
-    command = 'MATCH(c:Client{{id:{id}}}) DETACH DELETE c'.format(id=id)
+    command = 'MATCH(c:Client{{id:{id}}}) DETACH DELETE c'.format(id=client_id)
 
     return graph.run(command).summary()
 
@@ -95,15 +111,15 @@ def delete_client():
 @app.route('/product', methods=['POST'])
 def create_product():
 
-    id = request.json['id']
-    Nombre = request.json['Nombre']
-    Marca = request.json['Marca']
-    Precio = request.json['Precio']
+    product_id = request.json['id']
+    name = request.json['Nombre']
+    brand = request.json['Marca']
+    price = request.json['Precio']
 
     #TODO: Verification
 
     command = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
-        id=id, Nombre=Nombre, Marca=Marca, Precio=Precio)
+        id=product_id, Nombre=name, Marca=brand, Precio=price)
 
     return graph.run(command).summary()
 
@@ -119,9 +135,9 @@ def get_products():
 @app.route('/product', methods=['GET'])
 def get_product():
 
-    id = request.json['id']
+    product_id = request.json['id']
 
-    command = 'MATCH(p:Product{{id:{id}}}) RETURN (p)'.format(id=id)
+    command = 'MATCH(p:Product{{id:{id}}}) RETURN (p)'.format(id=product_id)
 
     res = graph.run(command).data()
 
@@ -136,15 +152,15 @@ def get_product():
 @app.route('/product', methods=['PUT'])
 def update_product():
 
-    id = request.json['id']
-    Nombre = request.json['Nombre']
-    Marca = request.json['Marca']
-    Precio = request.json['Precio']
+    product_id = request.json['id']
+    name = request.json['Nombre']
+    brand = request.json['Marca']
+    price = request.json['Precio']
 
     #TODO: Verification
 
     command = 'MATCH (p:Product{{id:{id}}}) SET p.Nombre = "{Nombre}", p.Marca = "{Marca}", p.Precio = {Precio} RETURN (p)'.format(
-        id=id, Nombre=Nombre, Marca=Marca, Precio=Precio)
+        id=product_id, Nombre=name, Marca=brand, Precio=price)
 
     return graph.run(command).summary()
 
@@ -155,9 +171,9 @@ def update_product():
 @app.route('/product', methods=['DELETE'])
 def delete_product():
 
-    id = request.json['id']
+    product_id = request.json['id']
 
-    command = 'MATCH(p:Product{{id:{id}}}) DETACH DELETE p'.format(id=id)
+    command = 'MATCH(p:Product{{id:{id}}}) DETACH DELETE p'.format(id=product_id)
 
     return graph.run(command).summary()
 
@@ -171,14 +187,14 @@ def delete_product():
 @app.route('/brand', methods=['POST'])
 def create_brand():
 
-    id = request.json['id']
-    Nombre = request.json['Nombre']
-    Pais = request.json['Pais']
+    brand_id = request.json['id']
+    name = request.json['Nombre']
+    country = request.json['Pais']
 
     #TODO: Verification
 
     command = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
-        id=id, Nombre=Nombre, Pais=Pais)
+        id=brand_id, Nombre=name, Pais=country)
 
     return graph.run(command).summary()
 
@@ -194,9 +210,9 @@ def get_brands():
 @app.route('/brand', methods=['GET'])
 def get_brand():
 
-    id = request.json['id']
+    brand_id = request.json['id']
 
-    command = 'MATCH(b:Brand{{id:{id}}}) RETURN (b)'.format(id=id)
+    command = 'MATCH(b:Brand{{id:{id}}}) RETURN (b)'.format(id=brand_id)
 
     res = graph.run(command).data()
 
@@ -216,12 +232,12 @@ def get_brand():
 @app.route('/buy', methods=['POST'])
 def buy():
 
-    IdCliente = request.json['IdCliente']
-    IdProducto = request.json['IdProducto']
-    Cantidad = request.json['Cantidad']
+    client_id = request.json['IdCliente']
+    product_id = request.json['IdProducto']
+    amount = request.json['Cantidad']
 
     command = 'MATCH(c:Client{{id:{IdCliente}}}),(p:Product{{id:{IdProducto}}}) CREATE (c)-[r:Buys{{Cantidad:{Cantidad}}}]->(p)'.format(
-        IdCliente=IdCliente, IdProducto=IdProducto, Cantidad=Cantidad)
+        IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
     return graph.run(command).summary()
 
 #           _____________________________
@@ -276,10 +292,10 @@ def top_5_consumers():
 @app.route('/searchClient', methods=['GET'])
 def search_client():
 
-    id = request.json['id']
+    client_id = request.json['id']
 
     command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(
-        id=id)
+        id=client_id)
     return graph.run(command).data()
 
 
@@ -298,10 +314,10 @@ def search_client():
 @app.route('/commonClient', methods=['GET'])
 def common_product():
 
-    id = request.json['id']
+    product_id = request.json['id']
 
     command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name + " " + C.last_name AS ClienteEnComun'.format(
-        id=id)
+        id=product_id)
 
     return graph.run(command).data()
 
@@ -316,9 +332,9 @@ def common_product():
 @app.route('/commonPurchases', methods=['GET'])
 def common_purchases():
 
-    id = request.json['id']
+    client_id = request.json['id']
 
-    command = ' CALL {{ MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} MATCH (c2:Client)-[r2:Buys]->(p2:Product) WHERE p.id = p2.id AND NOT c.id = c2.id RETURN c2.first_name + " " + c2.last_name AS Nombre, COLLECT(p2.Nombre) AS Productos ORDER BY(Nombre) }} WITH Nombre, Productos WHERE SIZE(Productos) >= 2 RETURN Nombre, Productos '.format(id=id)
+    command = ' CALL {{ MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} MATCH (c2:Client)-[r2:Buys]->(p2:Product) WHERE p.id = p2.id AND NOT c.id = c2.id RETURN c2.first_name + " " + c2.last_name AS Nombre, COLLECT(p2.Nombre) AS Productos ORDER BY(Nombre) }} WITH Nombre, Productos WHERE SIZE(Productos) >= 2 RETURN Nombre, Productos '.format(id=client_id)
 
     return graph.run(command).data()
 
