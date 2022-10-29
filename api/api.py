@@ -89,11 +89,11 @@ def create_client():
     command= 'MATCH(c:Client) WITH max(c.id) AS maxim return maxim'
     idResult = graph.run(command).data()
     
-    maximo=0
+    max_value=0
     for search in idResult:
-        maximo=search['maxim']
+        max_value=search['maxim']
     
-    client_id = maximo + 1;
+    client_id=max_value+1;
     
 
     command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}", last_name:"{last_name}"}})'.format(
@@ -172,12 +172,12 @@ def create_product():
     command= 'MATCH(p:Product) WITH max(p.id) AS maxim return maxim'
     idResult = graph.run(command).data()
     
-    maximo=0
+    max_value=0
     for search in idResult:
-        maximo=search['maxim']
+        max_value=search['maxim']
     
-    product_id=maximo+1;
-    command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}", Marca:"{Marca}", Precio:{Precio}}})'.format(
+    product_id=max_value+1;
+    command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
     
     graph.run(command2)
@@ -262,11 +262,11 @@ def create_brand():
     command= 'MATCH(b:Brands) WITH max(b.id) AS maxim return maxim'
     idResult = graph.run(command).data()
     
-    max=0
+    max_value=0
     for search in idResult:
-        max=search['maxim']
+        max_value=search['maxim']
     
-    brand_id=max+1;
+    brand_id=max_value+1;
 
     command2 = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
         id=brand_id, Nombre=name, Pais=country)
