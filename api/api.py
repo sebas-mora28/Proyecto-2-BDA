@@ -1,5 +1,3 @@
-
-from itertools import product
 from py2neo import Graph
 from flask import Flask, request, abort
 
@@ -30,50 +28,49 @@ def delete_all():
 @app.route('/loadData', methods=['POST'])
 def load_data():
     
-    for field_dict in request.json['clients']:
+    for client in request.json['clients']:
 
-        client_id = field_dict['id']
-        first_name = field_dict['first_name']
-        last_name = field_dict['last_name']
+        client_id = client['id']
+        first_name = client['first_name']
+        last_name = client['last_name']
 
-        command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
+        command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}", last_name:"{last_name}"}})'.format(
             id=client_id, first_name=first_name, last_name=last_name)
         graph.run(command)
 
-    for field_dict in request.json['brands']:
+    for brand in request.json['brands']:
 
-        brand_id = field_dict['id']
-        name = field_dict['name']
-        country = field_dict['country']
+        brand_id = brand['id']
+        name = brand['name']
+        country = brand['country']
 
-        command = 'CREATE (b:Brands{{id:{id}, nombre:"{name}",pais:"{country}"}})'.format(
+        command = 'CREATE (b:Brand{{id:{id}, nombre:"{name}", pais:"{country}"}})'.format(
             id=brand_id, name=name, country=country)
         graph.run(command)
 
-    for field_dict in request.json['products']:
+    for product in request.json['products']:
 
-        client_id = field_dict['id']
-        name = field_dict['nombre']
-        brand = field_dict['marca']
-        price = field_dict['precio']
+        client_id = product['id']
+        name = product['nombre']
+        brand = product['marca']
+        price = product['precio']
 
-        command = 'CREATE (p:Product{{id:{id}, name:"{name}", marca:"{brand}", price:"{price}"}})'.format(
+        command = 'CREATE (p:Product{{id:{id}, Nombre:"{name}", Marca:"{brand}", Precio:"{price}"}})'.format(
             id=client_id, name=name, brand=brand, price=price)
         graph.run(command)
 
-    for field_dict in request.json['compras']:
+    for compra in request.json['compras']:
 
-        client_id = field_dict['idCliente']
-        product_id = field_dict['idProducto']
-        count = field_dict['cantidad']
+        client_id = compra['idCliente']
+        product_id = compra['idProducto']
+        amount = compra['cantidad']
         
-        command = 'MATCH(c:Client),(p:Product) WHERE c.id={client_id} and p.id={product_id} CREATE (c)-[z:CompróProducto]->(p) SET z.cantidad={count}'.format(product_id=product_id, client_id=client_id,count=count)
+        command = 'MATCH(c:Client{{id:{client_id}}}),(p:Product{{id:{product_id}}}) CREATE (c)-[r:Buys{{Cantidad:{amount}}}]->(p)'.format(product_id=product_id, client_id=client_id,amount=amount)
         graph.run(command)
 
-    command = 'MATCH(b:Brands),(p:Product) WHERE b.nombre=p.marca CREATE (b)-[z:TieneProducto]->(p)'
-    graph.run(command)
+    command = 'MATCH(b:Brand),(p:Product) WHERE b.nombre = p.marca CREATE (b)-[z:Sells]->(p)'
         
-    return ""
+    return graph.run(command).summary()
 
 
 #           _____________________________
@@ -96,13 +93,13 @@ def create_client():
     for search in idResult:
         maximo=search['maxim']
     
-    client_id=maximo+1;
+    client_id = maximo + 1;
     
 
-    command2 = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
+    command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}", last_name:"{last_name}"}})'.format(
         id=client_id, first_name=first_name, last_name=last_name)
 
-    return graph.run(command2).summary()
+    return graph.run(command).summary()
 
 # ___________READ___________________
 
@@ -180,7 +177,7 @@ def create_product():
         maximo=search['maxim']
     
     product_id=maximo+1;
-    command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
+    command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}", Marca:"{Marca}", Precio:{Precio}}})'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
     
     graph.run(command2)
