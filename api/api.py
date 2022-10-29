@@ -113,12 +113,11 @@ def get_clients():
     return graph.run("MATCH(c:Client) RETURN (c)").data()
 
 
-@app.route('/client', methods=['GET'])
-def get_client():
+@app.route('/client/<id>', methods=['GET'])
+def get_client(id):
 
-    client_id = request.json['id']
 
-    command = 'MATCH(c:Client{{id:{id}}}) RETURN (c)'.format(id=client_id)
+    command = 'MATCH(c:Client{{id:{id}}}) RETURN (c)'.format(id=id)
 
     res = graph.run(command).data()
 
@@ -150,6 +149,7 @@ def update_client():
 @app.route('/client', methods=['DELETE'])
 def delete_client():
 
+    print("request", request.json)
     client_id = request.json['id']
 
     command = 'MATCH(c:Client{{id:{id}}}) DETACH DELETE c'.format(id=client_id)
@@ -165,7 +165,8 @@ def delete_client():
 @app.route('/product', methods=['POST'])
 def create_product():
 
-    
+    print(request.json)
+    product_id = request.json['id']
     name = request.json['Nombre']
     brand = request.json['Marca']
     price = request.json['Precio']
@@ -179,7 +180,7 @@ def create_product():
     for search in idResult:
         max_value=search['maxim']
     
-    product_id=max_value+1;
+    product_id=max_value+1
     command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
     
@@ -200,12 +201,10 @@ def get_products():
     return graph.run("MATCH(p:Product) RETURN (p)").data()
 
 
-@app.route('/product', methods=['GET'])
-def get_product():
+@app.route('/product/<id>', methods=['GET'])
+def get_product(id):
 
-    product_id = request.json['id']
-
-    command = 'MATCH(p:Product{{id:{id}}}) RETURN (p)'.format(id=product_id)
+    command = 'MATCH(p:Product{{id:{id}}}) RETURN (p)'.format(id=id)
 
     res = graph.run(command).data()
 
@@ -269,7 +268,7 @@ def create_brand():
     for search in idResult:
         max_value=search['maxim']
     
-    brand_id=max_value+1;
+    brand_id=max_value+1
 
     command2 = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
         id=brand_id, Nombre=name, Pais=country)
@@ -371,13 +370,11 @@ def top_5_consumers():
 # compras
 
 
-@app.route('/searchClient', methods=['GET'])
-def search_client():
-
-    client_id = request.json['id']
+@app.route('/searchClient/<id>', methods=['GET'])
+def search_client(id):
 
     command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(
-        id=client_id)
+        id=id)
     return graph.run(command).data()
 
 
@@ -424,5 +421,5 @@ def common_purchases():
 
 
 if __name__ == '__main__':
-    PORT = '5000'
+    PORT = '3000'
     app.run(host='localhost', port=PORT, debug=True)
