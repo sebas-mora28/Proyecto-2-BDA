@@ -1,4 +1,5 @@
 
+from itertools import product
 from py2neo import Graph
 from flask import Flask, request, abort
 
@@ -59,9 +60,7 @@ def load_data():
         command = 'CREATE (p:Product{{id:{id}, name:"{name}", marca:"{brand}", price:"{price}"}})'.format(
             id=client_id, name=name, brand=brand, price=price)
         graph.run(command)
-    
-    
-        
+
     for field_dict in request.json['compras']:
 
         client_id = field_dict['idCliente']
@@ -70,6 +69,9 @@ def load_data():
         
         command = 'MATCH(c:Client),(p:Product) WHERE c.id={client_id} and p.id={product_id} CREATE (c)-[z:CompróProducto]->(p) SET z.cantidad={count}'.format(product_id=product_id, client_id=client_id,count=count)
         graph.run(command)
+
+    command = 'MATCH(b:Brands),(p:Product) WHERE b.nombre=p.marca CREATE (b)-[z:TieneProducto]->(p)'
+    graph.run(command)
         
     return ""
 
@@ -83,16 +85,24 @@ def load_data():
 @app.route('/client', methods=['POST'])
 def create_client():
 
-    client_id = request.json['id']
+    
     first_name = request.json['first_name']
     last_name = request.json['last_name']
+    
+    command= 'MATCH(c:Client) WITH max(c.id) AS maxim return maxim'
+    idResult = graph.run(command).data()
+    
+    max_value=0
+    for search in idResult:
+        max_value=search['maxim']
+    
+    client_id=max_value+1;
+    
 
-    #TODO: Verification
-
-    command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
+    command2 = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
         id=client_id, first_name=first_name, last_name=last_name)
 
-    return graph.run(command).summary()
+    return graph.run(command2).summary()
 
 # ___________READ___________________
 
@@ -155,17 +165,31 @@ def delete_client():
 @app.route('/product', methods=['POST'])
 def create_product():
 
-    product_id = request.json['id']
+    
     name = request.json['Nombre']
     brand = request.json['Marca']
     price = request.json['Precio']
 
     #TODO: Verification
 
-    command = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
+    command= 'MATCH(p:Product) WITH max(p.id) AS maxim return maxim'
+    idResult = graph.run(command).data()
+    
+    max_value=0
+    for search in idResult:
+        max_value=search['maxim']
+    
+    product_id=max_value+1;
+    command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
+    
+    graph.run(command2)
 
-    return graph.run(command).summary()
+    command3 = 'MATCH(b:Brands),(p:Product) WHERE b.nombre=p.Marca and p.id={product_id} CREATE (b)-[z:TieneProducto]->(p)'.format(Marca=brand, product_id=product_id)
+    graph.run(command3)
+
+    
+    return ""
 
 # ___________READ___________________
 
@@ -231,16 +255,26 @@ def delete_product():
 @app.route('/brand', methods=['POST'])
 def create_brand():
 
-    brand_id = request.json['id']
+    
+    
     name = request.json['Nombre']
     country = request.json['Pais']
 
     #TODO: Verification
 
-    command = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
+    command= 'MATCH(b:Brands) WITH max(b.id) AS maxim return maxim'
+    idResult = graph.run(command).data()
+    
+    max_value=0
+    for search in idResult:
+        max_value=search['maxim']
+    
+    brand_id=max_value+1;
+
+    command2 = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
         id=brand_id, Nombre=name, Pais=country)
 
-    return graph.run(command).summary()
+    return graph.run(command2).summary()
 
 # ___________READ___________________
 
@@ -282,7 +316,11 @@ def buy():
 
     command = 'MATCH(c:Client{{id:{IdCliente}}}),(p:Product{{id:{IdProducto}}}) CREATE (c)-[r:Buys{{Cantidad:{Cantidad}}}]->(p)'.format(
         IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
-    return graph.run(command).summary()
+    
+    graph.run(command).summary()
+
+    
+    return 
 
 #           _____________________________
 # _________/ GENERAL QUERIES
