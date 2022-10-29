@@ -68,7 +68,7 @@ def load_data():
         product_id = field_dict['idProducto']
         count = field_dict['cantidad']
         
-        command = 'MATCH(c:Client),(p:Product) WHERE c.id={client_id} and p.id={product_id} CREATE (c)-[z:CompraProducto]->(p)'.format(product_id=product_id, client_id=client_id)
+        command = 'MATCH(c:Client),(p:Product) WHERE c.id={client_id} and p.id={product_id} CREATE (c)-[z:CompróProducto]->(p) SET z.cantidad={count}'.format(product_id=product_id, client_id=client_id,count=count)
         graph.run(command)
         
     return ""
