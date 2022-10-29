@@ -13,13 +13,12 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <AppBar position="static" style={{ background: '#118CE7' }}>
+    <AppBar position="static" style={{ background: ' #9238B9' }}>
       <Grid container maxWidth="xl" justifyContent='space-between'>
         <Toolbar disableGutters>
-          
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'}}}>              
                   <Button
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate("/home")}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                     >
                     Log out

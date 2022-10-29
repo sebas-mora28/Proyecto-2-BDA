@@ -1,4 +1,6 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { baseUrl } from '../../utils/parser/constants';
 import './style.scss'
 
 const TopBrands = () => {
@@ -7,6 +9,12 @@ const TopBrands = () => {
 
     useEffect(() => {
 
+      axios({method: 'GET', url: `${baseUrl}/top5Brands`}).then((response) => {
+        if(response.data){
+          console.log("Marcas mas vendidas: ", response.data)
+          setTopBrands(response.data)
+        }
+      })
     }, [])
 
     return (
@@ -26,9 +34,9 @@ const TopBrands = () => {
                         topBrands.map((brand) => {
                             return (
                                 <tr>
-                                <td>{brand.name}</td>
-                                <td>{brand.country}</td>
-                                <td>{brand.units}</td>
+                                <td>{brand.Nombre_Marca}</td>
+                                <td>{brand.Pais_Origen}</td>
+                                <td>{brand.Unidades_Vendidas}</td>
                               </tr>
                             )
                         })

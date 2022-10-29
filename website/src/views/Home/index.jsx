@@ -21,7 +21,7 @@ const Home = () => {
               <div className="icon"></div>
               <h2 className="title">Mantenimiento de catálogo</h2>
             </div>
-            <div className="card" onClick={() => navigate("/")}>
+            <div className="card" onClick={() => navigate("/register-purchase")}>
               <div className="icon"></div>
               <h2 className="title">Registro de compras</h2>
             </div>

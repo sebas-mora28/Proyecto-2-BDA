@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import './style.scss'
 
 const ClientPurchases = () => {
 
   const [clientPurchases, setClientPurchases] = useState([])
+
+  const params = useParams();
 
   useEffect(() => {
 

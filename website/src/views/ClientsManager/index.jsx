@@ -2,21 +2,42 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import "./style.scss"
 import { Icon } from '@iconify/react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { baseUrl } from '../../utils/parser/constants';
 
 const ClientsManager = () => {
 
-  const [clients, setClients] = useState([{
-    id: 1,
-    name: "sebastian",
-    lastNames: "mora"
-  }])
+  const [clients, setClients] = useState([])
 
 
+  const updateClients = () => {
+    axios.get(`${baseUrl}/clients`).then((response) => {
+      if(response.data) {
+        console.log(response.data)
+        setClients(response.data)
+      }
+    }).catch((error) => {
+      console.log(error)
+    })
+
+  }
+
+ 
   useEffect(() => {
-
+    updateClients()
   }, [])
 
-  const deleteClient = () => {
+  const deleteClient = (id) => {
+
+    axios({method: 'DELETE', url: `${baseUrl}/client`, data: {id: id}}).then((response) => {
+      if(response.data){
+        console.log(response.data)
+        updateClients()
+      }
+    }).catch((error) => {
+      console.log(error)
+    })
 
   }
 
@@ -33,7 +54,7 @@ const ClientsManager = () => {
                 <th>Editar</th>
                 <th>Eliminar</th>
                 <th>
-                  <a className="botonAgregar" href="./">
+                  <a className="botonAgregar" href="/register-client">
                     <Icon icon="uil:plus" />
                   </a>
                 </th>
@@ -44,15 +65,19 @@ const ClientsManager = () => {
               {
                 clients.map((client) => {
                   return (
-                    <tr>
-                    <td>{client.id}</td>
-                    <td>{client.name}</td>
-                    <td>{client.lastNames}</td>
+                    <tr key={client.c.id}>
+                    <td>{client.c.id}</td>
+                    <td>{client.c.first_name}</td>
+                    <td>{client.c.last_name}</td>
                     <td>
-                      <Icon icon="uil:pen" />
+                      <Link to={`/edit-client/${client.c.id}`}>
+                        <Icon icon="uil:pen"/>
+                      </Link>
                     </td>
                     <td>
-                      <Icon icon="uil:trash" />
+                      <button style={{background: 'transparent', border: 'transparent'}} onClick={() => deleteClient(client.c.id)}>
+                        <Icon icon="uil:trash" />
+                      </button>
                     </td>
                   </tr>
                   )

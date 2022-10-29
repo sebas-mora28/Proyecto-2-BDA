@@ -1,7 +1,9 @@
 
-.body {
+.body-upload-files {
     height:100vh;
     display: flex;
+    flex-direction: column;
+    gap: 10rem;
     justify-content: center;
     align-items: center;
     background:linear-gradient(89.97deg, #A18CED 4.2%, #DCB7D4 92.17%);
@@ -9,7 +11,35 @@
 
 
 
-    .container {
+.container-upload-files {
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 5rem
     }
 }
+
+
+.upload-file {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: black;
+    display: inline-block;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: red;
+}
+

@@ -23,7 +23,7 @@ const GeneralRequests = () => {
           <div className="icon"><Icon icon="uil-list-ol-alt" /></div>
           <h2 className="title">Top 5 de clientes con más compras</h2>
         </div>
-        <div className="card" onClick={() => navigate("/")}> 
+        <div className="card" onClick={() => navigate("/search-client")}> 
             <div className="icon"><Icon icon="uil-search"/></div>
             <h2 className="title">Busqueda de un cliente</h2>
         </div>

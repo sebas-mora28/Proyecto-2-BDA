@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
+import axios from 'axios';
+import { baseUrl } from '../../utils/parser/constants';
 
 const TopProducts = () => {
 
     const [topProducts, setTopProducts] = useState([]);
 
     useEffect(() => {
+
+      axios({method: 'GET', url: `${baseUrl}/top5Products`}).then((response) => {
+        if(response.data){
+          console.log("Top products: ", response.data)
+          setTopProducts(response.data)
+        }
+      })
 
     }, [])
 
@@ -24,9 +33,9 @@ const TopProducts = () => {
                     {
                         topProducts.map((product) => {
                             return (
-                                <tr>
-                                    <td>{product.name}</td>
-                                    <td>{product.units}</td>
+                                <tr key={product.Nombre_Producto}>
+                                    <td>{product.Nombre_Producto}</td>
+                                    <td>{product.Unidades_Vendidas}</td>
                                 </tr>
                             )
                         })

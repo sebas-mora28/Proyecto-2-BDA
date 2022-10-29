@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
+import { baseUrl } from '../../utils/parser/constants';
 import './style.scss'
-
+import axios from 'axios';
 const TopClients = () => {
 
     const [topClients, setTopClients] = useState([]);
 
     useEffect(() => {
+
+      axios({method: 'GET', url: `${baseUrl}/top5Consumers`}).then((response) => {
+        if(response.data){
+          console.log("Top clients: ", response.data)
+          setTopClients(response.data)
+        }
+      })
 
     }, [])
 
@@ -25,8 +33,8 @@ const TopClients = () => {
                         topClients.map((client) => {
                             return (
                                 <tr>
-                                <td>{client.name}</td>
-                                <td>{client.units}</td>
+                                <td>{client.Nombre_Cliente}</td>
+                                <td>{client.Unidades_Adquiridas}</td>
                               </tr>
                             )
                         })

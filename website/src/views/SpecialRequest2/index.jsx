@@ -51,68 +51,70 @@ const SpecialRequest2 = () => {
     }
 
     return (
-      <div className='body-special-request-1'>
-        <div className="container-special-request-1">
-              <h1 className = "registro">Consulta especial 2</h1>
-              <div className="form">
-                  <div className="input-field">
-                      <div className="input">
-                        <Grid container spacing={6} justifyContent={'center'} paddingTop={4} paddingBottom={4}>
-                            <Grid item container md={12} justifyContent='center'>
-                                <FormControl fullWidth sx={{display:'flex',justifyContent:'center'}}> 
-                                    <InputLabel id="clients">Clientes</InputLabel>               
-                                    <Select
-                                        label="Clientes"
-                                        name="clients"
-                                        id="clients"
-                                        value={values.clients}
-                                        onChange={handleInputChange}
-                                        sx={{width: '100%' }} 
-                                        error={errors.clients !== '' && errors.clients !== undefined ? true : false}
-                                        >
-                                            {
-                                                clients.map((product) => {
-                                                    return <MenuItem value={clients.id}>{clients.name}</MenuItem>
-                                                })
-                                            }
-                                    </Select>       
-                                    {errors.product && <FormHelperText htmlFor="countryBox" error> {errors.product} </FormHelperText>}
-                                </FormControl>
-                            </Grid>
-                        </Grid>   
-                      </div>
-                      <div className = "input-field button">
-                          <button type="submit" className="registerbtn">Buscar</button>
-                      </div>
-                  </div>
-              </div>
-        </div>
-        <div className='container-result-special-request-1'>
-            <h1 class="titulo">Clientes que tienen al menos 2 productos en común</h1>
-            <table class="tabla">
-              <thead class="thead">
-                <tr>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                    results.map((client) => {
-                        return (
-                            <tr>
-                            <td>{client.name}</td>
-                            <td>{client.lastName}</td>
-                          </tr>
-                        )
-                    })
+        <Form onSubmit={submit}>
+        <div className='body-special-request-1'>
+          <div className="container-special-request-1">
+                <h1 className = "registro">Consulta especial 2</h1>
+                <div className="form">
+                    <div className="input-field">
+                        <div className="input">
+                          <Grid container spacing={6} justifyContent={'center'} paddingTop={4} paddingBottom={4}>
+                              <Grid item container md={12} justifyContent='center'>
+                                  <FormControl fullWidth sx={{display:'flex',justifyContent:'center'}}> 
+                                      <InputLabel id="clients">Clientes</InputLabel>               
+                                      <Select
+                                          label="Clientes"
+                                          name="clients"
+                                          id="clients"
+                                          value={values.clients}
+                                          onChange={handleInputChange}
+                                          sx={{width: '100%' }} 
+                                          error={errors.clients !== '' && errors.clients !== undefined ? true : false}
+                                          >
+                                              {
+                                                  clients.map((product) => {
+                                                      return <MenuItem value={clients.id}>{clients.name}</MenuItem>
+                                                  })
+                                              }
+                                      </Select>       
+                                      {errors.product && <FormHelperText htmlFor="countryBox" error> {errors.product} </FormHelperText>}
+                                  </FormControl>
+                              </Grid> 
+                          </Grid>   
+                        </div>
+                        <div className = "input-field button">
+                            <button type="submit" className="registerbtn">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+          </div>
+          <div className='container-result-special-request-1'>
+              <h1 class="titulo">Clientes que tienen al menos dos productos en común</h1>
+              <table class="tabla">
+                <thead class="thead">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                      results.map((client) => {
+                          return (
+                              <tr>
+                              <td>{client.name}</td>
+                              <td>{client.lastName}</td>
+                            </tr>
+                          )
+                      })
 
-                }
-              </tbody>
-            </table>
+                  }
+                </tbody>
+              </table>
 
+          </div>
         </div>
-      </div>
+        </Form>
   )
 }
 
