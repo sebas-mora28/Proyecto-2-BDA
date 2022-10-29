@@ -1,5 +1,7 @@
+
 from py2neo import Graph
 from flask import Flask, request, abort
+
 
 graph = Graph('bolt://localhost:7687', auth=('neo4j', 'password'))
 app = Flask(__name__)
@@ -26,7 +28,49 @@ def delete_all():
 
 @app.route('/loadData', methods=['POST'])
 def load_data():
+    
+    for field_dict in request.json['clients']:
 
+        client_id = field_dict['id']
+        first_name = field_dict['first_name']
+        last_name = field_dict['last_name']
+
+        command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}",last_name:"{last_name}"}})'.format(
+            id=client_id, first_name=first_name, last_name=last_name)
+        graph.run(command)
+
+    for field_dict in request.json['brands']:
+
+        brand_id = field_dict['id']
+        name = field_dict['name']
+        country = field_dict['country']
+
+        command = 'CREATE (b:Brands{{id:{id}, nombre:"{name}",pais:"{country}"}})'.format(
+            id=brand_id, name=name, country=country)
+        graph.run(command)
+
+    for field_dict in request.json['products']:
+
+        client_id = field_dict['id']
+        name = field_dict['nombre']
+        brand = field_dict['marca']
+        price = field_dict['precio']
+
+        command = 'CREATE (p:Product{{id:{id}, name:"{name}", marca:"{brand}", price:"{price}"}})'.format(
+            id=client_id, name=name, brand=brand, price=price)
+        graph.run(command)
+    
+    
+        
+    for field_dict in request.json['compras']:
+
+        client_id = field_dict['idCliente']
+        product_id = field_dict['idProducto']
+        count = field_dict['cantidad']
+        
+        command = 'MATCH(c:Client),(p:Product) WHERE c.id={client_id} and p.id={product_id} CREATE (c)-[z:CompraProducto]->(p)'.format(product_id=product_id, client_id=client_id)
+        graph.run(command)
+        
     return ""
 
 
