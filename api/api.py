@@ -59,6 +59,8 @@ def load_data():
         command = 'CREATE (p:Product{{id:{id}, name:"{name}", marca:"{brand}", price:"{price}"}})'.format(
             id=client_id, name=name, brand=brand, price=price)
         graph.run(command)
+
+        
     
     
         
@@ -70,6 +72,9 @@ def load_data():
         
         command = 'MATCH(c:Client),(p:Product) WHERE c.id={client_id} and p.id={product_id} CREATE (c)-[z:CompróProducto]->(p) SET z.cantidad={count}'.format(product_id=product_id, client_id=client_id,count=count)
         graph.run(command)
+
+    command = 'MATCH(b:Brands),(p:Product) WHERE b.nombre=p.marca CREATE (b)-[z:TieneProducto]->(p)'
+    graph.run(command)
         
     return ""
 
@@ -164,8 +169,11 @@ def create_product():
 
     command = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
+    
+    graph.run(command)
 
-    return graph.run(command).summary()
+    
+    return ""
 
 # ___________READ___________________
 
