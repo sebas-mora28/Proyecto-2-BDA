@@ -4,6 +4,8 @@ import './style.scss'
 import * as xlsx from "xlsx";
 import { Form } from '../../components/UseForm';
 import { parse } from 'papaparse';
+import axios from 'axios';
+import { baseUrl } from '../../utils/parser/constants';
 
 const UploadFiles = () => {
 
@@ -105,6 +107,11 @@ const UploadFiles = () => {
         products: fileProducts,
         purchases: filePurchases
       }
+      console.log(body)
+
+      axios({method: 'POST', url: `${baseUrl}/loadData`, data: body}).then((response) => {
+        console.log(response)
+      })
     }
 
 
@@ -139,7 +146,7 @@ const UploadFiles = () => {
             <input
               accept=".csv"
               className='upload-file'
-              id="contained-products"
+              id="upload-products"
               type="file"
               onChange={uploadProductsFile}
             />

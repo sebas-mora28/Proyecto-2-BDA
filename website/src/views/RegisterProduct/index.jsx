@@ -1,5 +1,5 @@
-import { TextField } from '@mui/material';
-import React, { useEffect } from 'react'
+import { TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
+import React, { useEffect, useState } from 'react'
 import { useForm, Form } from '../../components/UseForm';
 import {Grid} from '@mui/material';
 import './style.scss'
@@ -8,6 +8,8 @@ import axios from 'axios';
 import { baseUrl } from '../../utils/parser/constants';
 
 const RegisterProduct = ({edit}) => {
+
+    const [brands, setBrands] = useState([])
 
     const initialValues = {
         id: 0,
@@ -45,6 +47,15 @@ const RegisterProduct = ({edit}) => {
 
 
     useEffect(() => {
+
+        axios({method: 'GET', url: `${baseUrl}/brands`}).then((response) => {
+            if(response.data){
+                console.log(response.data)
+                setBrands(response.data)
+            }
+        })
+
+    
         if(edit){
             axios({method: 'GET', url: `${baseUrl}/product/${params.productId}`}).then((response) => {
                 if(response.data?.[0]){
@@ -106,18 +117,26 @@ const RegisterProduct = ({edit}) => {
                                   />
                               </Grid>
                               <Grid item container md={12} justifyContent='center'>
-                                  <TextField 
-                                      label="Marca"
-                                      name="Marca"
-                                      placeholder=""
-                                      value={values.Marca}
-                                      onChange={handleInputChange}
-                                      InputLabelProps={{
-                                          shrink: true,
-                                      }}
-                                      sx={{width: '100%'}} 
-                                      {...(errors.brnad && {error:true, helperText:errors.Marca})}
-                                  />
+                              <FormControl fullWidth sx={{display:'flex',justifyContent:'center'}}> 
+                                        <InputLabel id="brands">Marcas</InputLabel>               
+                                        <Select
+                                            label="Marcas"
+                                            name="Marca"
+                                            id="brands"
+                                            value={values.Marca}
+                                            onChange={handleInputChange}
+                                            sx={{width: '100%' }} 
+                                            error={errors.brand !== '' && errors.brand !== undefined ? true : false}
+                                            >
+                                                {
+                                                    brands.map((brand) => {
+                                                        console.log(brand.b.nombre)
+                                                        return <MenuItem key={brand.b.id} value={brand.b.nombre}>{brand.b.nombre}</MenuItem>
+                                                    })
+                                                }
+                                        </Select>       
+                                        {errors.brand && <FormHelperText htmlFor="countryBox" error> {errors.brand} </FormHelperText>}
+                                    </FormControl>
                               </Grid>
                               <Grid item container md={12} justifyContent='center'>
                                   <TextField 

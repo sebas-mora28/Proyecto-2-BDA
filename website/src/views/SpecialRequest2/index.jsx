@@ -1,19 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormControl, Grid, TextField, Select, InputLabel, MenuItem, FormHelperText } from '@mui/material'
 import { useForm, Form } from '../../components/UseForm';
 import './style.scss'
-
+import axios from 'axios';
+import { baseUrl } from '../../utils/parser/constants';
 const SpecialRequest2 = () => {
 
     const [clients, setClients] = useState([]);
-    const [products, setProducts] = useState([]);
 
     const [results, setResults] = useState([]);
 
     const initialValues = {
         client: '',
-        product: 0
     }
+
+    useEffect(() => {
+        axios({method: 'GET', url: `${baseUrl}/clients`}).then((response) => {
+            if(response.data){
+                setClients(response.data)
+            }
+        })
+    }, [])
 
 
     const validate = (fieldValues = values) => {
@@ -44,7 +51,12 @@ const SpecialRequest2 = () => {
         e.preventDefault();
         if(validate()){
 
-            console.log("Se crea un juegador")
+            axios({method: 'GET', url: `${baseUrl}/commonPurchases/${values.client}`}).then((response) => {
+                if(response.data){
+                    console.log("Response: ", response.data)
+                    setResults(response.data)
+                }
+            })
             
 
         }
@@ -64,20 +76,20 @@ const SpecialRequest2 = () => {
                                       <InputLabel id="clients">Clientes</InputLabel>               
                                       <Select
                                           label="Clientes"
-                                          name="clients"
+                                          name="client"
                                           id="clients"
-                                          value={values.clients}
+                                          value={values.client}
                                           onChange={handleInputChange}
                                           sx={{width: '100%' }} 
-                                          error={errors.clients !== '' && errors.clients !== undefined ? true : false}
+                                          error={errors.client !== '' && errors.client !== undefined ? true : false}
                                           >
                                               {
-                                                  clients.map((product) => {
-                                                      return <MenuItem value={clients.id}>{clients.name}</MenuItem>
+                                                  clients.map((client) => {
+                                                      return <MenuItem value={client.c.id}>{client.c.first_name} {client.c.last_name}</MenuItem>
                                                   })
                                               }
                                       </Select>       
-                                      {errors.product && <FormHelperText htmlFor="countryBox" error> {errors.product} </FormHelperText>}
+                                      {errors.client && <FormHelperText htmlFor="countryBox" error> {errors.client} </FormHelperText>}
                                   </FormControl>
                               </Grid> 
                           </Grid>   
@@ -89,21 +101,29 @@ const SpecialRequest2 = () => {
                 </div>
           </div>
           <div className='container-result-special-request-1'>
-              <h1 class="titulo">Clientes que tienen al menos dos productos en común</h1>
-              <table class="tabla">
-                <thead class="thead">
+              <h1 className="titulo">Clientes que tienen al menos dos productos en común</h1>
+              <table className="tabla">
+                <thead className="thead">
                   <tr>
                     <th>Nombre</th>
-                    <th>Apellido</th>
+                    <th>Producto en comun</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                      results.map((client) => {
+                      results.map((res) => {
                           return (
-                              <tr>
-                              <td>{client.name}</td>
-                              <td>{client.lastName}</td>
+                                <tr>
+                                <td>{res.Nombre}</td>
+                                <td>
+                                  <table style={{display: 'flex', justifyContent:'center'}}>
+                                        <tbody> 
+                                                {res.Productos.map((product) => {
+                                                    return <tr><td>{product}</td></tr>
+                                                })}     
+                                        </tbody>
+                                  </table>
+                                 </td>
                             </tr>
                           )
                       })

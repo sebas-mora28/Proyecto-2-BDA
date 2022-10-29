@@ -31,6 +31,7 @@ const SearchClients = () => {
 
         e.preventDefault();
         if(validate()){
+            console.log(`${baseUrl}/searchClient/${values.client}`)
             axios.get(`${baseUrl}/searchClient/${values.client}`).then((response) => {
                 if(response.data){
                     console.log("Products: ", response.data)
@@ -76,7 +77,7 @@ const SearchClients = () => {
                                       <InputLabel id="clients">Clientes</InputLabel>               
                                       <Select
                                           label="Clientes"
-                                          name="clients"
+                                          name="client"
                                           id="clients"
                                           value={values.client}
                                           onChange={handleInputChange}

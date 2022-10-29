@@ -71,8 +71,7 @@ const SpecialRequest1 = () => {
         if(validate()){
 
             console.log("Se crea un juegador")
-            
-
+        
         }
     }
 
@@ -120,7 +119,7 @@ const SpecialRequest1 = () => {
                                           >
                                               {
                                                   products.map((product) => {
-                                                      return <MenuItem key={product.p.id} value={product.p.id}>{product.p.name}</MenuItem>
+                                                      return <MenuItem key={product.id} value={product.id}>{product.Nombre_Producto}</MenuItem>
                                                   })
                                               }
                                       </Select>       

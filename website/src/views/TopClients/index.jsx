@@ -32,7 +32,7 @@ const TopClients = () => {
                     {
                         topClients.map((client) => {
                             return (
-                                <tr>
+                                <tr key={client.Nombre_Cliente}>
                                 <td>{client.Nombre_Cliente}</td>
                                 <td>{client.Unidades_Adquiridas}</td>
                               </tr>

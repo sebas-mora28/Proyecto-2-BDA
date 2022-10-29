@@ -10,7 +10,6 @@ import { baseUrl } from '../../utils/parser/constants';
 const RegisterClient = ({edit}) => {
 
     const initialValues = {
-        id: 0,
         first_name: '',
         last_name: ''
     }
