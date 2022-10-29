@@ -13,9 +13,11 @@ def home():
 #           _____________________________
 # _________/ DEBUG QUERIES
 
+
 @app.route('/all', methods=['GET'])
 def get_all():
     return graph.run("MATCH(n) RETURN n").data()
+
 
 @app.route('/delete', methods=['Delete'])
 def delete_all():
@@ -27,7 +29,7 @@ def delete_all():
 
 @app.route('/loadData', methods=['POST'])
 def load_data():
-    
+
     for client in request.json['clients']:
 
         client_id = client['id']
@@ -64,12 +66,13 @@ def load_data():
         client_id = compra['idCliente']
         product_id = compra['idProducto']
         amount = compra['cantidad']
-        
-        command = 'MATCH(c:Client{{id:{client_id}}}),(p:Product{{id:{product_id}}}) CREATE (c)-[r:Buys{{Cantidad:{amount}}}]->(p)'.format(product_id=product_id, client_id=client_id,amount=amount)
+
+        command = 'MATCH(c:Client{{id:{client_id}}}),(p:Product{{id:{product_id}}}) CREATE (c)-[r:Buys{{Cantidad:{amount}}}]->(p)'.format(
+            product_id=product_id, client_id=client_id, amount=amount)
         graph.run(command)
 
     command = 'MATCH(b:Brand),(p:Product) WHERE b.nombre = p.marca CREATE (b)-[z:Sells]->(p)'
-        
+
     return graph.run(command).summary()
 
 
@@ -82,19 +85,13 @@ def load_data():
 @app.route('/client', methods=['POST'])
 def create_client():
 
-    
     first_name = request.json['first_name']
     last_name = request.json['last_name']
-    
-    command= 'MATCH(c:Client) WITH max(c.id) AS maxim return maxim'
-    idResult = graph.run(command).data()
-    
-    max_value=0
-    for search in idResult:
-        max_value=search['maxim']
-    
-    client_id=max_value+1;
-    
+
+    command = 'MATCH(c:Client) WITH MAX(c.id) AS maximum RETURN maximum'
+    max_id = graph.run(command).data()[0]['maximum']
+
+    client_id = max_id + 1
 
     command = 'CREATE (c:Client{{id:{id}, first_name:"{first_name}", last_name:"{last_name}"}})'.format(
         id=client_id, first_name=first_name, last_name=last_name)
@@ -134,8 +131,6 @@ def update_client():
     first_name = request.json['first_name']
     last_name = request.json['last_name']
 
-    #TODO: Verification
-
     command = 'MATCH(c:Client{{id:{id}}}) SET c.first_name = "{first_name}", c.last_name = "{last_name}" RETURN (c)'.format(
         id=client_id, first_name=first_name, last_name=last_name)
 
@@ -162,31 +157,23 @@ def delete_client():
 @app.route('/product', methods=['POST'])
 def create_product():
 
-    
     name = request.json['Nombre']
     brand = request.json['Marca']
     price = request.json['Precio']
 
-    #TODO: Verification
+    command = 'MATCH(p:Product) WITH MAX(p.id) AS maximum RETURN maximum'
+    max_id = graph.run(command).data()[0]['maximum']
 
-    command= 'MATCH(p:Product) WITH max(p.id) AS maxim return maxim'
-    idResult = graph.run(command).data()
-    
-    max_value=0
-    for search in idResult:
-        max_value=search['maxim']
-    
-    product_id=max_value+1;
-    command2 = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}",Marca:"{Marca}",Precio:{Precio}}})'.format(
+    product_id = max_id + 1
+    command = 'CREATE (p:Product{{id:{id}, Nombre:"{Nombre}", Marca:"{Marca}", Precio:{Precio}}})'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
-    
-    graph.run(command2)
 
-    command3 = 'MATCH(b:Brands),(p:Product) WHERE b.nombre=p.Marca and p.id={product_id} CREATE (b)-[z:TieneProducto]->(p)'.format(Marca=brand, product_id=product_id)
-    graph.run(command3)
+    graph.run(command)
 
-    
-    return ""
+    command = 'MATCH(b:Brand{{Nombre:{brand}}}),(p:Product{{id:{product_id}}}) CREATE (b)-[z:Sells]->(p)'.format(
+        brand=brand, product_id=product_id)
+
+    return graph.run(command).summary()
 
 # ___________READ___________________
 
@@ -222,8 +209,6 @@ def update_product():
     brand = request.json['Marca']
     price = request.json['Precio']
 
-    #TODO: Verification
-
     command = 'MATCH (p:Product{{id:{id}}}) SET p.Nombre = "{Nombre}", p.Marca = "{Marca}", p.Precio = {Precio} RETURN (p)'.format(
         id=product_id, Nombre=name, Marca=brand, Precio=price)
 
@@ -238,7 +223,8 @@ def delete_product():
 
     product_id = request.json['id']
 
-    command = 'MATCH(p:Product{{id:{id}}}) DETACH DELETE p'.format(id=product_id)
+    command = 'MATCH(p:Product{{id:{id}}}) DETACH DELETE p'.format(
+        id=product_id)
 
     return graph.run(command).summary()
 
@@ -252,26 +238,14 @@ def delete_product():
 @app.route('/brand', methods=['POST'])
 def create_brand():
 
-    
-    
+    brand_id = request.json['id']
     name = request.json['Nombre']
     country = request.json['Pais']
 
-    #TODO: Verification
-
-    command= 'MATCH(b:Brands) WITH max(b.id) AS maxim return maxim'
-    idResult = graph.run(command).data()
-    
-    max_value=0
-    for search in idResult:
-        max_value=search['maxim']
-    
-    brand_id=max_value+1;
-
-    command2 = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
+    command = 'CREATE (b:Brand{{id:{id}, Nombre:"{Nombre}",Pais:"{Pais}"}})'.format(
         id=brand_id, Nombre=name, Pais=country)
 
-    return graph.run(command2).summary()
+    return graph.run(command).summary()
 
 # ___________READ___________________
 
@@ -313,11 +287,8 @@ def buy():
 
     command = 'MATCH(c:Client{{id:{IdCliente}}}),(p:Product{{id:{IdProducto}}}) CREATE (c)-[r:Buys{{Cantidad:{Cantidad}}}]->(p)'.format(
         IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
-    
-    graph.run(command).summary()
 
-    
-    return 
+    return graph.run(command).summary()
 
 #           _____________________________
 # _________/ GENERAL QUERIES
