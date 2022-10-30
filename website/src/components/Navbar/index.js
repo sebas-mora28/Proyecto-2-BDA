@@ -14,7 +14,7 @@ const Navbar = () => {
 
   return (
     <AppBar position="static" style={{ background: ' #9238B9' }}>
-      <Grid container maxWidth="xl" justifyContent='center'>
+      <Grid container maxWidth="xl" justifyContent='left'>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'}}}>              
                   <Button

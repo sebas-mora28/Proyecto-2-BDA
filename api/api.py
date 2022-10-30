@@ -367,8 +367,6 @@ def search_client(id):
 @app.route('/commonClient/<productId>', methods=['GET'])
 def common_product(productId):
 
-
-
     command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name AS first_name, C.last_name AS last_name'.format(
         id=productId)
 
