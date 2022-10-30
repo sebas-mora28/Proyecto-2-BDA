@@ -71,7 +71,7 @@ def load_data():
             product_id=product_id, client_id=client_id, amount=amount)
         graph.run(command)
 
-    command = 'MATCH(b:Brand),(p:Product) WHERE b.nombre = p.marca CREATE (b)-[z:Sells]->(p)'
+    command = 'MATCH(b:Brand),(p:Product) WHERE b.Nombre = p.Marca CREATE (b)-[z:Sells]->(p)'
 
     return graph.run(command).summary()
 
@@ -109,7 +109,6 @@ def get_clients():
 
 @app.route('/client/<id>', methods=['GET'])
 def get_client(id):
-
 
     command = 'MATCH(c:Client{{id:{id}}}) RETURN (c)'.format(id=id)
 
@@ -283,8 +282,17 @@ def buy():
     product_id = request.json['IdProducto']
     amount = request.json['Cantidad']
 
-    command = 'MATCH(c:Client{{id:{IdCliente}}}),(p:Product{{id:{IdProducto}}}) CREATE (c)-[r:Buys{{Cantidad:{Cantidad}}}]->(p)'.format(
-        IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {client_id} RETURN COLLECT (p.id) AS productos'.format(
+        client_id=client_id)
+    
+    products = graph.run(command).data()[0]["productos"]
+
+    if (product_id in products):
+        command = 'MATCH (c:Client{{id:{IdCliente}}})-[r:Buys]->(p:Product{{id:{IdProducto}}}) SET r.Cantidad = r.Cantidad + {Cantidad}'.format(
+            IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
+    else:
+        command = 'MATCH(c:Client{{id:{IdCliente}}}),(p:Product{{id:{IdProducto}}}) CREATE (c)-[r:Buys{{Cantidad:{Cantidad}}}]->(p)'.format(
+            IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
 
     return graph.run(command).summary()
 
@@ -377,7 +385,6 @@ def common_product():
 
 @app.route('/commonPurchases/<id>', methods=['GET'])
 def common_purchases(id):
-
 
     command = ' CALL {{ MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} MATCH (c2:Client)-[r2:Buys]->(p2:Product) WHERE p.id = p2.id AND NOT c.id = c2.id RETURN c2.first_name + " " + c2.last_name AS Nombre, COLLECT(p2.Nombre) AS Productos ORDER BY(Nombre) }} WITH Nombre, Productos WHERE SIZE(Productos) >= 2 RETURN Nombre, Productos '.format(id=id)
 
