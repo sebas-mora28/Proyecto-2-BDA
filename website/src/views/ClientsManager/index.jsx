@@ -4,7 +4,7 @@ import "./style.scss"
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { baseUrl } from '../../utils/parser/constants';
+import { baseUrl } from '../../utils/constants';
 
 const ClientsManager = () => {
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import axios from 'axios';
-import { baseUrl } from '../../utils/parser/constants';
+import { baseUrl } from '../../utils/constants';
 
 const TopProducts = () => {
 

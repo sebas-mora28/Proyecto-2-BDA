@@ -5,7 +5,7 @@ import {Grid} from '@mui/material';
 import './style.scss'
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseUrl } from '../../utils/parser/constants';
+import { baseUrl } from '../../utils/constants';
 
 const RegisterClient = ({edit}) => {
 

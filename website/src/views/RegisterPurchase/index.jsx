@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useForm, Form } from '../../components/UseForm';
-import { Grid, Select, TextField, FormControl, MenuItem, InputLabel, FormHelperText} from '@mui/material';
+import { Grid, Select, TextField, FormControl, MenuItem, InputLabel, FormHelperText, Alert} from '@mui/material';
 import axios from 'axios';
-import { baseUrl } from '../../utils/parser/constants';
+import { baseUrl } from '../../utils/constants';
 import { validateJson } from 'convert-csv-to-json/src/util/jsonUtils';
 
 const RegisterPurchase = () => {
 
     const [products, setProducts] = useState([]);
     const [clients, setClients] = useState([]);
+    const [alert, setAlert] = useState(false)
+
+    const showAlert = () => {
+        setAlert(true)
+        setTimeout(() => {
+            setAlert(false)
+        }, 15000);
+    }
 
 
     useEffect(() => {
@@ -81,6 +89,10 @@ const RegisterPurchase = () => {
 
     return (
         <Form onSubmit={submit}>
+            {
+                alert ? <Alert severity='success'>Comprea agregada con éxito</Alert> : null
+
+            }
             <div className='body-register-purchase'>
                 <div className="container-register-purchase">
                     <h1 className = "registro">Registrar compra</h1>

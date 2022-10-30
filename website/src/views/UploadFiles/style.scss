@@ -20,7 +20,7 @@
 }
 
 
-.upload-file {
+.input-file {
     width: 0.1px;
 	height: 0.1px;
 	opacity: 0;
@@ -30,7 +30,7 @@
 }
 
 
-.inputfile + label {
+.input-file + label {
     font-size: 1.25em;
     font-weight: 700;
     color: white;
@@ -38,8 +38,8 @@
     display: inline-block;
 }
 
-.inputfile:focus + label,
-.inputfile + label:hover {
+.input-file:focus + label,
+.input-file + label:hover {
     background-color: red;
 }
 

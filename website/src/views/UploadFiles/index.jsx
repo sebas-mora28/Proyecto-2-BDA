@@ -5,7 +5,8 @@ import * as xlsx from "xlsx";
 import { Form } from '../../components/UseForm';
 import { parse } from 'papaparse';
 import axios from 'axios';
-import { baseUrl } from '../../utils/parser/constants';
+import { baseUrl } from '../../utils/constants';
+import { enableFunctionalities } from '../../utils/authotization';
 
 const UploadFiles = () => {
 
@@ -13,26 +14,6 @@ const UploadFiles = () => {
     const [fileClients, setFileClients] = useState([]);
     const [fileProducts, setFileProducts] = useState([]);
     const [filePurchases, setFilePurchases] = useState([]);
-
-
-    const ref1 = useRef(null)
-    const ref2  = useRef(null)
-    const ref3  = useRef(null)
-    const ref4  = useRef(null)
-
-
-    const handleClick1 = () => {
-      ref1.current.click();
-    }
-    const handleClick2 = () => {
-      ref2.current.click();
-    }
-    const handleClick3 = () => {
-      ref3.current.click();
-    }
-    const handleClick4 = () => {
-      ref4.current.click();
-    }
 
 
     const uploadBrandsFile = (e) => {
@@ -107,10 +88,9 @@ const UploadFiles = () => {
         products: fileProducts,
         purchases: filePurchases
       }
-      console.log(body)
 
       axios({method: 'POST', url: `${baseUrl}/loadData`, data: body}).then((response) => {
-        console.log(response)
+        enableFunctionalities();
       })
     }
 
@@ -134,7 +114,7 @@ const UploadFiles = () => {
             <label htmlFor='upload-clients'>Cargar clientes</label>
             <input
               accept=".csv"
-              className='upload-file'
+              className='input-file'
               id="upload-clients"
               type="file"
               onChange={uploadClientsFile}

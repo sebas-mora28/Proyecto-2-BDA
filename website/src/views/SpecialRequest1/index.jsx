@@ -3,24 +3,24 @@ import { FormControl, Grid, TextField, Select, InputLabel, MenuItem, FormHelperT
 import { useForm, Form } from '../../components/UseForm';
 import './style.scss'
 import axios from 'axios';
-import { baseUrl } from '../../utils/parser/constants';
+import { baseUrl } from '../../utils/constants';
 
 const SpecialRequest1 = () => {
 
     const [clients, setClients] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
 
     const [results, setResults] = useState([]);
 
     const initialValues = {
         client: '',
-        product: ''
     }
 
     const validate = (fieldValues = values) => {
         let temp = {...errors}
         temp.client = fieldValues.client === "" ? "Este espacio es requerido" : ""
-        temp.product = fieldValues.product === "" ? "Este espacio es requerido" : ""  
+        temp.product = selectedProduct === null ? "Este espacio es requerido" : ""  
 
         setErrors({
             ...temp
@@ -53,7 +53,7 @@ const SpecialRequest1 = () => {
 
     
     useEffect(() => {
-
+        setSelectedProduct(null)
         if(values.client !== ''){
             axios({method: 'GET', url: `${baseUrl}/searchClient/${values.client}`}).then((response) => {
                 if(response.data){
@@ -63,15 +63,18 @@ const SpecialRequest1 = () => {
             })
 
         }
-    }, [values.client])
+    }, [values])
 
     const submit = (e) => {
 
         e.preventDefault();
         if(validate()){
-
-            console.log("Se crea un juegador")
-        
+            axios({method: 'GET', url: `${baseUrl}/commonClient/${selectedProduct}`}).then((response) => {
+                if(response.data){
+                    console.log("Productos del client: ", response.data)
+                    setResults(response.data)
+                }
+            })        
         }
     }
 
@@ -113,7 +116,7 @@ const SpecialRequest1 = () => {
                                           name="product"
                                           id="products"
                                           value={values.product}
-                                          onChange={handleInputChange}
+                                          onChange={(e) => setSelectedProduct(e.target.value) }
                                           sx={{width: '100%' }} 
                                           error={errors.product !== '' && errors.product !== undefined ? true : false}
                                           >
@@ -148,8 +151,8 @@ const SpecialRequest1 = () => {
                       results.map((client) => {
                           return (
                               <tr>
-                              <td>{client.name}</td>
-                              <td>{client.lastName}</td>
+                              <td>{client.first_name}</td>
+                              <td>{client.last_name}</td>
                             </tr>
                           )
                       })
@@ -157,7 +160,6 @@ const SpecialRequest1 = () => {
                   }
                 </tbody>
               </table>
-
           </div>
         </div>
         </Form>
