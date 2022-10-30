@@ -130,8 +130,8 @@ const RegisterProduct = ({edit}) => {
                                             >
                                                 {
                                                     brands.map((brand) => {
-                                                        console.log(brand.b.nombre)
-                                                        return <MenuItem key={brand.b.id} value={brand.b.nombre}>{brand.b.nombre}</MenuItem>
+                                                        console.log(brand.b.Nombre)
+                                                        return <MenuItem key={brand.b.id} value={brand.b.Nombre}>{brand.b.Nombre}</MenuItem>
                                                     })
                                                 }
                                         </Select>       

@@ -46,7 +46,7 @@ def load_data():
         name = brand['nombre']
         country = brand['pais']
 
-        command = 'CREATE (b:Brand{{id:{id}, nombre:"{name}", pais:"{country}"}})'.format(
+        command = 'CREATE (b:Brand{{id:{id}, Nombre:"{name}", Pais:"{country}"}})'.format(
             id=brand_id, name=name, country=country)
         graph.run(command)
 
@@ -61,11 +61,11 @@ def load_data():
             id=client_id, name=name, brand=brand, price=price)
         graph.run(command)
 
-    for compra in request.json['purchases']:
+    for purchase in request.json['purchases']:
 
-        client_id = compra['idCliente']
-        product_id = compra['idProducto']
-        amount = compra['cantidad']
+        client_id = purchase['idCliente']
+        product_id = purchase['idProducto']
+        amount = purchase['cantidad']
 
         command = 'MATCH(c:Client{{id:{client_id}}}),(p:Product{{id:{product_id}}}) CREATE (c)-[r:Buys{{Cantidad:{amount}}}]->(p)'.format(
             product_id=product_id, client_id=client_id, amount=amount)
@@ -74,7 +74,6 @@ def load_data():
     command = 'MATCH(b:Brand),(p:Product) WHERE b.Nombre = p.Marca CREATE (b)-[z:Sells]->(p)'
 
     return graph.run(command).summary()
-
 
 #           _____________________________
 # _________/ CLIENT QUERIES
@@ -284,7 +283,7 @@ def buy():
 
     command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {client_id} RETURN COLLECT (p.id) AS productos'.format(
         client_id=client_id)
-    
+
     products = graph.run(command).data()[0]["productos"]
 
     if (product_id in products):
@@ -322,7 +321,7 @@ def top_5_products():
 @app.route('/top5Brands', methods=['GET'])
 def top_5_brands():
 
-    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) MATCH (b:Brand) WHERE b.nombre = p.Marca RETURN b.nombre AS Nombre_Marca, b.pais AS Pais_Origen, SUM(r.Cantidad) AS Unidades_Vendidas ORDER BY (Unidades_Vendidas) DESC LIMIT 5'
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) MATCH (b:Brand) WHERE b.Nombre = p.Marca RETURN b.Nombre AS Nombre_Marca, b.Pais AS Pais_Origen, SUM(r.Cantidad) AS Unidades_Vendidas ORDER BY (Unidades_Vendidas) DESC LIMIT 5'
     return graph.run(command).data()
 
 # #3.
