@@ -9,7 +9,6 @@ export const enableFunctionalities = () => {
 }
 
 export const areFunctionalitiesEnabled = () => {
-    console.log("xd: ", !!localStorage.getItem("functionalitiesEnabled") === 'true')
     return localStorage.getItem("functionalitiesEnabled") === 'true'
 }
 

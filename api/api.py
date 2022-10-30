@@ -347,7 +347,7 @@ def top_5_consumers():
 @app.route('/searchClient/<id>', methods=['GET'])
 def search_client(id):
 
-    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(
+    command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {id} RETURN p.id AS id, p.Nombre AS Nombre_Producto, r.Cantidad AS Cantidad_Comprada ORDER BY (Cantidad_Comprada) DESC'.format(
         id=id)
     return graph.run(command).data()
 
@@ -364,12 +364,12 @@ def search_client(id):
 # los clientes que también hayan adquirido ese mismo producto.
 
 
-@app.route('/commonClient/productId', methods=['GET'])
+@app.route('/commonClient/<productId>', methods=['GET'])
 def common_product(productId):
 
 
 
-    command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name + " " + C.last_name AS ClienteEnComun'.format(
+    command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name AS first_name, C.last_name AS last_name'.format(
         id=productId)
 
     return graph.run(command).data()
