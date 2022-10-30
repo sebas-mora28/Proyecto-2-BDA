@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FormControl, Grid, TextField, Select, InputLabel, MenuItem, FormHelperText } from '@mui/material'
+import { FormControl, Grid, TextField, Select, InputLabel, MenuItem, FormHelperText, Alert } from '@mui/material'
 import { useForm, Form } from '../../components/UseForm';
 import './style.scss'
 import axios from 'axios';
@@ -12,6 +12,16 @@ const SpecialRequest1 = () => {
     const [products, setProducts] = useState([]);
 
     const [results, setResults] = useState([]);
+
+    const [alert, setAlert] = useState(false)
+
+    const showAlert = () => {
+      setAlert(true)
+      setTimeout(() => {
+        setAlert(false)
+      }, 1500)
+
+    }
 
     const initialValues = {
         client: '',
@@ -72,6 +82,9 @@ const SpecialRequest1 = () => {
             axios({method: 'GET', url: `${baseUrl}/commonClient/${values.client}/${selectedProduct}`}).then((response) => {
                 if(response.data){
                     console.log("Productos del client: ", response.data)
+                    if(response.data.length === 0){
+                        showAlert()
+                    }
                     setResults(response.data)
                 }
             })        
@@ -80,6 +93,9 @@ const SpecialRequest1 = () => {
 
     return (
         <Form onSubmit={submit}>
+            {
+                alert && (<Alert severity='info'>No se encontraron resultados </Alert>)
+            }
         <div className='body-special-request-1'>
           <div className="container-special-request-1">
                 <h1 className = "registro">Consulta especial 1</h1>

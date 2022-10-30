@@ -80,6 +80,7 @@ const RegisterPurchase = () => {
             const body = {IdCliente: values.client, IdProducto: values.product, Cantidad: values.amount }
             axios({method: 'POST' ,url:`${baseUrl}/buy`, data: body}).then((response) => { 
                 setValues(initialValues)
+                showAlert()
                 console.log("Se realizo la compra exitosamente")
             })
             

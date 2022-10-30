@@ -6,6 +6,15 @@ import './style.scss'
 const TopBrands = () => {
 
     const [topBrands, setTopBrands] = useState([]);
+    const [alert, setAlert] = useState(false)
+
+    const showAlert = () => {
+      setAlert(false)
+      setTimeout(() => {
+        setAlert(true)
+      }, 1500)
+
+    }
 
     useEffect(() => {
 
@@ -18,9 +27,10 @@ const TopBrands = () => {
     }, [])
 
     return (
+      <>
       <div className='body-top-brands'>
           <div className="container-top-brands">
-            <h1 className="titulo">Top 5 marcas con más compras</h1>
+            <h1 className="titulo">Top 5 marcas más vendidas</h1>
               <table className="tabla">
                 <thead className="thead">
                 <tr>
@@ -45,6 +55,7 @@ const TopBrands = () => {
               </table>
           </div>
       </div>
+      </>
   )
 }
 

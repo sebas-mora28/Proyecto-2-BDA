@@ -155,7 +155,7 @@ const RegisterProduct = ({edit}) => {
                           </Grid>
                                   
                       <div className = "input-field button">
-                          <button type="submit" className="registerbtn">{edit ? "Gurdar" : "Registrar"}</button>
+                          <button type="submit" className="registerbtn">{edit ? "Guardar" : "Registrar"}</button>
                       </div>
                       </div>          
                 </div>
