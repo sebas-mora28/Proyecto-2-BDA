@@ -41,7 +41,7 @@ function App() {
           <Route path='/top-brands' element={<TopBrands /> }  />
           <Route path='/top-products' element={<TopProducts /> }  />
           <Route path='/search-client' element={<SearchClients />} />
-          <Route path='/especial-requests' element={<SpecialRequests /> }  />
+          <Route path='/special-requests' element={<SpecialRequests /> }  />
           <Route path='/client-purchases/:clientId' element={<ClientPurchases />} />
           <Route path='/register-purchase' element={<RegisterPurchase />} />
           <Route path='/special-request-1' element={<SpecialRequest1 />} />
