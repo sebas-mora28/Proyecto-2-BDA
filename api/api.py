@@ -365,12 +365,12 @@ def search_client(id):
 
 
 @app.route('/commonClient/productId', methods=['GET'])
-def common_product(productId):
+def common_product(product_id):
 
 
 
     command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name + " " + C.last_name AS ClienteEnComun'.format(
-        id=productId)
+        id=product_id)
 
     return graph.run(command).data()
 
