@@ -69,7 +69,7 @@ const SpecialRequest1 = () => {
 
         e.preventDefault();
         if(validate()){
-            axios({method: 'GET', url: `${baseUrl}/commonClient/${selectedProduct}`}).then((response) => {
+            axios({method: 'GET', url: `${baseUrl}/commonClient/${values.client}/${selectedProduct}`}).then((response) => {
                 if(response.data){
                     console.log("Productos del client: ", response.data)
                     setResults(response.data)

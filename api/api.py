@@ -364,11 +364,11 @@ def search_client(id):
 # los clientes que también hayan adquirido ese mismo producto.
 
 
-@app.route('/commonClient/<productId>', methods=['GET'])
-def common_product(productId):
+@app.route('/commonClient/<client_id>/<product_id>', methods=['GET'])
+def common_product(client_id,product_id):
 
-    command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {id} RETURN C.first_name AS first_name, C.last_name AS last_name'.format(
-        id=productId)
+    command = 'MATCH (C:Client)-[r:Buys]->(P:Product) WHERE P.id = {product_id} AND NOT C.id = {client_id}  RETURN C.first_name AS first_name, C.last_name AS last_name'.format(
+        client_id = client_id, product_id=product_id)
 
     return graph.run(command).data()
 
