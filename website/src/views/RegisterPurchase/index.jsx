@@ -91,7 +91,7 @@ const RegisterPurchase = () => {
     return (
         <Form onSubmit={submit}>
             {
-                alert ? <Alert severity='success'>Comprea agregada con éxito</Alert> : null
+                alert ? <Alert severity='success'>Compra agregada con éxito</Alert> : null
 
             }
             <div className='body-register-purchase'>

@@ -1,3 +1,4 @@
+import sys
 from py2neo import Graph
 from flask import Flask, request, abort
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<p>API service is running</p>"
+    return "<p>API service is running!</p>"
 
 #           _____________________________
 # _________/ DEBUG QUERIES
@@ -67,8 +68,16 @@ def load_data():
         product_id = purchase['idProducto']
         amount = purchase['cantidad']
 
-        command = 'MATCH(c:Client{{id:{client_id}}}),(p:Product{{id:{product_id}}}) CREATE (c)-[r:Buys{{Cantidad:{amount}}}]->(p)'.format(
-            product_id=product_id, client_id=client_id, amount=amount)
+        command = 'MATCH (c:Client)-[r:Buys]->(p:Product) WHERE c.id = {client_id} RETURN COLLECT (p.id) AS productos'.format(
+        client_id=client_id)
+
+        products = graph.run(command).data()[0]["productos"]
+        if (int(product_id) in products):
+            command = 'MATCH (c:Client{{id:{IdCliente}}})-[r:Buys]->(p:Product{{id:{IdProducto}}}) SET r.Cantidad = r.Cantidad + {Cantidad}'.format(
+                IdCliente=client_id, IdProducto=product_id, Cantidad=amount)
+        else:
+            command = 'MATCH(c:Client{{id:{client_id}}}),(p:Product{{id:{product_id}}}) CREATE (c)-[r:Buys{{Cantidad:{amount}}}]->(p)'.format(
+                product_id=product_id, client_id=client_id, amount=amount)
         graph.run(command)
 
     command = 'MATCH(b:Brand),(p:Product) WHERE b.Nombre = p.Marca CREATE (b)-[z:Sells]->(p)'
